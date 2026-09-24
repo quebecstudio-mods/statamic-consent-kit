@@ -1,5 +1,13 @@
 # Changelog
 
+## 6.0.4 - 2026-09-24
+
+### Changed
+
+- The settings screen renders the catalogue the core describes instead of
+  declaring the same fields again. The screen is unchanged; what it is built
+  from is not.
+
 ## 6.0.3 - 2026-09-24
 
 ### Changed

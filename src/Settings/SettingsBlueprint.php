@@ -2,6 +2,8 @@
 
 namespace QuebecStudioMods\ConsentKit\Statamic\Settings;
 
+use QuebecStudioMods\ConsentKit\Core\Settings\Catalogue;
+
 /**
  * The fields of the addon settings screen, which Statamic renders as a publish
  * form and saves to `resources/addons/statamic-consent-kit.yaml`.
@@ -57,15 +59,15 @@ class SettingsBlueprint
             'tabs' => [
                 'main' => [
                     'display' => __('General'),
-                    'sections' => [self::general(), self::cookie(), self::policy()],
+                    'sections' => [self::section('general'), self::section('cookie'), self::section('policy')],
                 ],
                 'behaviour' => [
                     'display' => __('Behaviour'),
-                    'sections' => [self::behaviour(), self::measurement(), self::video()],
+                    'sections' => [self::section('behaviour'), self::section('measurement'), self::section('video')],
                 ],
                 'appearance' => [
                     'display' => __('Appearance'),
-                    'sections' => [self::appearance(), self::inventoryTable()],
+                    'sections' => [self::section('appearance'), self::inventoryTable()],
                 ],
                 'inventory' => [
                     'display' => __('Cookie inventory'),
@@ -115,181 +117,6 @@ class SettingsBlueprint
     }
 
     /** @return array<string, mixed> */
-    private static function general(): array
-    {
-        return self::section(__('General'), null, [
-            'autoInject' => [
-                'display' => __('Automatic injection'),
-                'instructions' => __('Places the banner at the end of `<body>`, without touching any template. Turn this off only if the site needs to position it itself, with `{{ consent:banner }}`. The `<head>` bootstrap always stays automatic.'),
-                'type' => 'toggle',
-            ],
-            'defaultLanguage' => [
-                'display' => __('Fallback language'),
-                'instructions' => __('Used when the current locale has no wording. The addon ships English and French, plus any the site adds in lang/vendor/cookie-consent.'),
-                'type' => 'text',
-                'width' => '50',
-            ],
-        ]);
-    }
-
-    /** @return array<string, mixed> */
-    private static function cookie(): array
-    {
-        return self::section(__('Consent cookie'), null, [
-            'cookieName' => [
-                'display' => __('Cookie name'),
-                'instructions' => __('Name of the cookie that remembers the visitor’s choice. Renaming it invalidates existing consents — bump the policy version at the same time.'),
-                'type' => 'text',
-                'width' => '50',
-            ],
-            'cookieMaxAge' => [
-                'display' => __('Lifetime'),
-                'instructions' => __('In seconds. 15,552,000 is 180 days.'),
-                'type' => 'integer',
-                'validate' => 'min:0',
-                'width' => '50',
-            ],
-            'version' => [
-                'display' => __('Policy version'),
-                'instructions' => __('Bump this when a cookie appears in a non-necessary category, a category is added, or a purpose changes. Visitors will then be asked again.'),
-                'type' => 'integer',
-                'validate' => 'min:1',
-                'width' => '50',
-            ],
-        ]);
-    }
-
-    /** @return array<string, mixed> */
-    private static function policy(): array
-    {
-        return self::section(__('Privacy policy'), null, [
-            'policyUrl' => [
-                'display' => __('Privacy policy URL'),
-                'instructions' => __('Shown in the banner. Leave it empty for no link.'),
-                'type' => 'text',
-            ],
-        ]);
-    }
-
-    /** @return array<string, mixed> */
-    private static function behaviour(): array
-    {
-        return self::section(__('Behaviour'), null, [
-            'gpcHidesBanner' => [
-                'display' => __('Skip the banner on a Global Privacy Control refusal'),
-                'instructions' => __('Some browsers send a signal meaning “I refuse optional cookies”. That refusal is always honoured: optional categories start off, and nothing is set before consent. This setting only decides whether the banner still asks. With the banner skipped, a visitor changes their mind from the reopen tab — so keep that tab on, or provide your own entry point.'),
-                'type' => 'toggle',
-            ],
-            'reopenButton' => [
-                'display' => __('Reopen tab'),
-                'instructions' => __('Small tab shown once the visitor has decided, so the banner can be reopened. Required for compliance — withdrawal must be as easy as consent. Turn it off only if the site provides its own entry point calling window.qsmConsentKit.open().'),
-                'type' => 'toggle',
-            ],
-            'reopenPosition' => [
-                'display' => __('Reopen tab position'),
-                'instructions' => __('Bottom edge of the screen, on this side. “Auto” follows the display mode: on the right for a bottom right corner, on the left otherwise.'),
-                'type' => 'select',
-                'options' => [
-                    'auto' => __('Auto'),
-                    'left' => __('Left'),
-                    'right' => __('Right'),
-                ],
-                'if' => ['reopenButton' => true],
-                'width' => '50',
-            ],
-        ]);
-    }
-
-    /** @return array<string, mixed> */
-    private static function measurement(): array
-    {
-        return self::section(
-            __('Measurement'),
-            __('Which category a visitor has to accept before Google Consent Mode and Matomo are granted. A site that measures nothing leaves both empty.'),
-            [
-                'analyticsCategory' => [
-                    'display' => __('Analytics category'),
-                    'instructions' => __('Drives Matomo and Google analytics_storage.'),
-                    'type' => 'text',
-                    'width' => '50',
-                ],
-                'marketingCategory' => [
-                    'display' => __('Marketing category'),
-                    'instructions' => __('Drives Google ad_storage, ad_user_data and ad_personalization.'),
-                    'type' => 'text',
-                    'width' => '50',
-                ],
-            ]
-        );
-    }
-
-    /** @return array<string, mixed> */
-    private static function video(): array
-    {
-        return self::section(__('Video'), null, [
-            'videoFacade' => [
-                'display' => __('YouTube facade'),
-                'instructions' => __('YouTube videos load only when the visitor clicks, so nothing reaches Google beforehand — the click is the consent, for that video alone. Only YouTube is covered: videos hosted elsewhere are untouched by this setting. Turning this off embeds YouTube directly, which lets Google set cookies as soon as the page is displayed, without any consent.'),
-                'type' => 'toggle',
-            ],
-            'videoThumbnails' => [
-                'display' => __('YouTube thumbnails'),
-                'instructions' => __('Show the real thumbnail on the facade. The server fetches it from YouTube once, caches it, and serves it from this domain — the visitor never contacts Google before clicking. Turning this off falls back to a plain gradient.'),
-                'type' => 'toggle',
-                'if' => ['videoFacade' => true],
-            ],
-            'videoConsentCategory' => [
-                'display' => __('Category that lifts the facade'),
-                'instructions' => __('A visitor who accepted this category gets the video loaded outright, without clicking. Left empty, the facade always applies — which is the safer answer: consent for a category is broader than consent for one video, and Law 25 asks for specific consent.'),
-                'type' => 'text',
-                'if' => ['videoFacade' => true],
-                'width' => '50',
-            ],
-        ]);
-    }
-
-    /** @return array<string, mixed> */
-    private static function appearance(): array
-    {
-        return self::section(__('Appearance'), null, [
-            'colorScheme' => [
-                'display' => __('Colour scheme'),
-                'instructions' => __('“Auto” follows the visitor’s system preference. The dark scheme uses the palette set through --qsm-ck-dark-*.'),
-                'type' => 'select',
-                'options' => [
-                    'auto' => __('Auto (recommended)'),
-                    'light' => __('Light'),
-                    'dark' => __('Dark'),
-                ],
-                'width' => '50',
-            ],
-            'displayMode' => [
-                'display' => __('Display mode'),
-                'instructions' => __('Full width along the bottom, or a box: floating in the middle, or in a bottom corner. On a narrow screen every mode is full width.'),
-                'type' => 'select',
-                'options' => [
-                    'full' => __('Full width'),
-                    'floating' => __('Floating box'),
-                    'corner-left' => __('Bottom left corner'),
-                    'corner-right' => __('Bottom right corner'),
-                ],
-                'width' => '50',
-            ],
-            'backdropStyle' => [
-                'display' => __('Panel backdrop'),
-                'instructions' => __('Effect applied behind the “Manage” panel. Blur signals the modality without hiding the page.'),
-                'type' => 'select',
-                'options' => [
-                    'blur' => __('Blur (recommended)'),
-                    'dim' => __('Dim'),
-                    'none' => __('None'),
-                ],
-                'width' => '50',
-            ],
-        ]);
-    }
-
-    /** @return array<string, mixed> */
     private static function inventoryTable(): array
     {
         $classes = [];
@@ -302,7 +129,7 @@ class SettingsBlueprint
             ];
         }
 
-        return self::section(
+        return self::custom(
             __('Inventory table'),
             __('The cookie table can be shown in a page of the site — the privacy policy, most of the time. It has no style of its own: it takes on the style of the page around it.'),
             [
@@ -332,7 +159,7 @@ class SettingsBlueprint
     /** @return array<string, mixed> */
     private static function inventory(): array
     {
-        return self::section(
+        return self::custom(
             __('Cookie inventory'),
             __('This inventory is a compliance record: it must reflect what the site actually sets. A category with no declared cookie is not shown in the banner. Leave it empty to use the shipped categories.'),
             [
@@ -381,49 +208,14 @@ class SettingsBlueprint
         );
     }
 
-    /** @return array<string, mixed> */
-    private static function registry(): array
-    {
-        $pro = self::$pro
-            ? null
-            : (string)__('Keeping a server-side register is part of the Pro edition. Standard collects and honours consent; Pro archives the proof.');
-
-        return self::section(__('Consent register'), $pro, [
-            'registry' => [
-                'display' => __('Record decisions'),
-                'instructions' => __('Each decision is written down as the browser makes it: the server clock, the site, the categories answered, and a fingerprint of the wording that was on screen. The cookie’s own timestamp lives on the visitor’s device and proves nothing. Off by default — a register is something a site announces in its privacy policy.'),
-                'type' => 'toggle',
-
-                'visibility' => self::$pro ? 'visible' : 'read_only',
-            ],
-            'registryGrace' => [
-                'display' => __('Keep records for'),
-                'instructions' => __('Months kept beyond the life of the consent cookie itself, so a proof outlives what it attests. Zero keeps every record until it is purged by hand.'),
-                'type' => 'integer',
-                'validate' => 'min:0',
-                'if' => ['registry' => true],
-                'width' => '50',
-            ],
-            'registryUser' => [
-                'display' => __('Record the signed-in user'),
-                'instructions' => __('When a decision comes from someone signed in, their account is recorded with it. This is the one identity the server can assert rather than be told. Deleting an account clears the link and leaves the decision.'),
-                'type' => 'toggle',
-                'if' => ['registry' => true],
-            ],
-            'registryRequestContext' => [
-                'display' => __('Record where the decision came from'),
-                'instructions' => __('The visitor’s address and browser, stored as they are, so a record answers where a decision came from — which a hash cannot. It also makes the register personal data, to be declared and to be answered for. Off by default.'),
-                'type' => 'toggle',
-                'if' => ['registry' => true],
-            ],
-        ]);
-    }
-
     /**
+     * A section this addon declares itself: the cookie inventory, whose
+     * repeatable field has no shape the catalogue could hold.
+     *
      * @param  array<string, mixed>  $fields
      * @return array<string, mixed>
      */
-    private static function section(string $display, ?string $instructions, array $fields): array
+    private static function custom(string $display, ?string $instructions, array $fields): array
     {
         $current = [];
 
@@ -436,6 +228,83 @@ class SettingsBlueprint
             'instructions' => $instructions,
             'fields' => self::fields($current),
         ], static fn (mixed $value) => $value !== null);
+    }
+
+    /**
+     * A section of the catalogue, rendered as a blueprint section.
+     *
+     * @return array<string, mixed>
+     */
+    private static function section(string $name, ?string $instructions = null): array
+    {
+        $definition = Catalogue::SECTIONS[$name];
+        $fields = [];
+
+        foreach ($definition['fields'] as $handle => $field) {
+            $fields[$handle] = self::withCurrentValue(self::control($field), (string)$handle);
+        }
+
+        return array_filter([
+            'display' => __($definition['label']),
+            'instructions' => $instructions ?? (isset($definition['help']) ? (string)__($definition['help']) : null),
+            'fields' => self::fields($fields),
+        ], static fn (mixed $value) => $value !== null);
+    }
+
+    /**
+     * One catalogue field as Statamic describes a field. The help names the
+     * template call as `:tag`, which every host spells its own way.
+     *
+     * @param  array<string, mixed>  $field
+     * @return array<string, mixed>
+     */
+    private static function control(array $field): array
+    {
+        $control = [
+            'display' => __($field['label']),
+            'type' => $field['kind'],
+        ];
+
+        if (isset($field['help'])) {
+            $control['instructions'] = __($field['help'], ['tag' => '`{{ consent:banner }}`']);
+        }
+
+        if (isset($field['options'])) {
+            $control['options'] = array_map(static fn (string $label): string => (string)__($label), $field['options']);
+        }
+
+        foreach (['if', 'width', 'validate'] as $key) {
+            if (isset($field[$key])) {
+                $control[$key] = $field[$key];
+            }
+        }
+
+        return $control;
+    }
+
+    /**
+     * The register section, plus what only this addon knows: whether the
+     * licence opens it.
+     *
+     * @return array<string, mixed>
+     */
+    private static function registry(): array
+    {
+        $section = self::section('registry', self::$pro
+            ? null
+            : (string)__('Keeping a server-side register is part of the Pro edition. Standard collects and honours consent; Pro archives the proof.'));
+
+        if (self::$pro) {
+            return $section;
+        }
+
+        foreach ($section['fields'] as $index => $field) {
+            if ($field['handle'] === 'registry') {
+                $section['fields'][$index]['field']['visibility'] = 'read_only';
+            }
+        }
+
+        return $section;
     }
 
     /**
