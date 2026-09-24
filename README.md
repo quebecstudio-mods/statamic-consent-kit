@@ -1,20 +1,60 @@
-# Cookie Consent Kit for Statamic — `quebecstudio-mods/statamic-consent-kit`
+# Cookie Consent Kit for Statamic
 
 Cookie consent banner for Statamic 6, built for Quebec's Law 25 and usable
 under the GDPR.
 
-Statamic is a Laravel application, so the addon is powered by
-[`quebecstudio-mods/laravel-consent-kit`](https://github.com/quebecstudio-mods/laravel-consent-kit),
-which injects the banner, and by `quebecstudio-mods/consent-kit-core`, which
-renders it. The addon adds the Antlers tags, the control panel screens and the
-consent register.
+**No third-party cookie is set before the visitor agrees**, and the markup is
+the same for every visitor, so pages stay cacheable — static caching included.
 
+## What it does
 
-- No third-party cookie is set before consent.
-- The HTML is the same for every visitor; pages stay cacheable, including under
-  static caching.
-- English and French included; a site adds any language with one file.
-- YouTube videos load on click, with the thumbnail served by the site.
+- **A banner with the categories the site declares**, answered by accepting
+  everything, refusing everything, or choosing one category at a time.
+- **A cookie inventory** the site fills in the control panel, rendered as a
+  table in the privacy policy page, styled by the site's own CSS framework.
+- **YouTube videos load on click.** Nothing reaches Google before that, and the
+  thumbnail is served by the site, not fetched from YouTube.
+- **Any script or iframe waits for its category** — mark it and the addon
+  activates it when consent arrives.
+- **Google Consent Mode and Matomo** are primed refused before any tag runs,
+  and updated the moment the visitor answers.
+- **Global Privacy Control is honoured**, and the banner can be skipped for
+  visitors who send it.
+- **Settings in the control panel**, on Statamic's own settings screen. A site
+  that keeps its configuration in version control can pin any of them.
+- **English and French included.** A site adds a language with one file, or
+  overrides a single sentence.
+- **Templates are yours.** Override the banner, the table or the video facade
+  in Antlers or Blade.
+
+### With the Pro edition
+
+- **A consent register**: every decision recorded server-side with the server's
+  clock, the site, the categories granted, and a fingerprint of the exact
+  wording that was on screen. The cookie's own timestamp lives on the visitor's
+  device and proves nothing.
+- **Read it in the control panel**, filtered by date, answer and site, with the
+  screen each decision was made on shown as it was worded then.
+- **Export to CSV or JSON.** The export carries the wording of every screen, so
+  a third party can recompute each fingerprint and check that nothing moved.
+- **Retention and a purge utility**, with three permissions — viewing,
+  exporting and purging — so producing a proof is not the same trust as
+  destroying one.
+
+## Editions
+
+| Edition | What it adds |
+|---|---|
+| Standard | The banner, the cookie inventory, the video facade |
+| Pro | The consent register: server-side proof of what was shown and answered |
+
+Set the edition in `config/statamic/editions.php`:
+
+```php
+'addons' => [
+    'quebecstudio-mods/statamic-consent-kit' => 'pro',
+],
+```
 
 ## Installation
 
@@ -31,21 +71,6 @@ Statamic serves; the control panel is untouched.
 Settings live under **Settings › Cookie Consent Kit**. Publishing
 `config/cookie-consent.php` is optional and pins whatever it declares: those
 settings then show as read-only in the panel.
-
-## Editions
-
-| Edition | What it adds |
-|---|---|
-| Standard | The banner, the cookie inventory, the video facade |
-| Pro | The consent register: server-side proof of what was shown and answered |
-
-Set the edition in `config/statamic/editions.php`:
-
-```php
-'addons' => [
-    'quebecstudio-mods/statamic-consent-kit' => 'pro',
-],
-```
 
 ## In templates
 
@@ -98,6 +123,14 @@ the sources:
 
 Without it the inventory is styled only where the site happens to use the same
 utilities elsewhere.
+
+## How it is built
+
+Statamic is a Laravel application, so the banner is injected by
+[`quebecstudio-mods/laravel-consent-kit`](https://github.com/quebecstudio-mods/laravel-consent-kit)
+and rendered by `quebecstudio-mods/consent-kit-core`; the register is kept by
+`quebecstudio-mods/consent-kit-register`. This addon adds the Antlers tags, the
+control panel screens and the register's own.
 
 ## Documentation
 

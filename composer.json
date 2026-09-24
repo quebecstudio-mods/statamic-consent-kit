@@ -26,7 +26,7 @@
     },
     "require": {
         "php": ">=8.2",
-        "quebecstudio-mods/consent-kit-core": "^1.4",
+        "quebecstudio-mods/consent-kit-core": "^1.5",
         "quebecstudio-mods/consent-kit-register": "^1.0",
         "quebecstudio-mods/laravel-consent-kit": "^1.1",
         "statamic/cms": "^6.0"
@@ -64,10 +64,12 @@
         "style": "@php vendor/bin/pint --test",
         "stan": "@php -d memory_limit=512M vendor/bin/phpstan analyse --no-progress",
         "types": "@php -d memory_limit=512M vendor/bin/pest --type-coverage --compact --min=100",
+        "wording": "@php tools/check-wording.php",
         "check": [
             "@style",
             "@stan",
             "@types",
+            "@wording",
             "@test"
         ],
         "refactor": "@php -d memory_limit=512M vendor/bin/rector process --dry-run"

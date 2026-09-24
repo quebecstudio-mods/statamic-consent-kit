@@ -1,10 +1,26 @@
 # Changelog
 
+## 6.0.6 - 2026-09-24
+
+### Added
+
+- A check that every string the addon asks to translate resolves, run with the
+  rest. Nothing here renders a screen, so nothing else would notice a key the
+  wording no longer carries.
+- The settings screen warns, when the cookie table is styled with Tailwind,
+  that Tailwind scans no package and the classes have to be pointed at.
+
+### Changed
+
+- The README opens on what the addon does and what the Pro edition adds,
+  rather than on how it is put together. The Marketplace shows it as the
+  product description.
+
 ## 6.0.5 - 2026-09-24
 
 ### Fixed
 
-- **Retention answers to the records, not to the switch.** Turning the register
+- **Retention answers to the recordsje, not to the switch.** Turning the register
   off stopped expiry, so decisions already kept — which can carry an address
   and a user agent — stayed indefinitely. They go on expiring now. Turning the
   register off still stops new decisions being written.

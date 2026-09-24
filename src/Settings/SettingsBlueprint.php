@@ -146,6 +146,14 @@ class SettingsBlueprint
                     ],
                     'width' => '50',
                 ],
+
+                'inventoryTailwind' => [
+                    'display' => 'Tailwind',
+                    'type' => 'info',
+                    'state' => 'warning',
+                    'content' => __('Tailwind generates only the classes it finds in the site’s own files, and these come from the package. Add `@source "vendor/quebecstudio-mods/consent-kit-core/src/Defaults.php"` to the site’s stylesheet, or the table is styled only where the site happens to use the same utilities elsewhere.'),
+                    'if' => ['inventoryFramework' => 'tailwind'],
+                ],
                 'inventoryClasses' => [
                     'display' => __('Custom'),
                     'type' => 'group',
