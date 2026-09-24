@@ -9,7 +9,6 @@ which injects the banner, and by `quebecstudio-mods/consent-kit-core`, which
 renders it. The addon adds the Antlers tags, the control panel screens and the
 consent register.
 
-The same kit is also a Craft CMS plugin (link to the Plugin Store to come).
 
 - No third-party cookie is set before consent.
 - The HTML is the same for every visitor; pages stay cacheable, including under

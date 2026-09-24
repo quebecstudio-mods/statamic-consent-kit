@@ -189,11 +189,43 @@ On the site's own connection, `php artisan migrate` creates the two tables.
 
 ## Configuration
 
-`config/cookie-consent.php` is shared with the Laravel package, which documents
-every key: cookie name and lifetime, consent version, policy URL, default
-language, auto-injection, colour scheme, backdrop, display mode, reopen tab,
-Global Privacy Control, analytics and marketing categories, video facade, and
-the cookie inventory.
+Everything is set from the control panel. `config/cookie-consent.php` exists for
+the keys a site would rather keep in version control: what it fixes there is
+shown on the settings screen but cannot be changed from it.
+
+```bash
+php please vendor:publish --tag=cookie-consent-config
+```
+
+| Key | Default | What it does |
+|---|---|---|
+| `cookieName` | `cookie_consent` | Cookie holding the visitor's decision |
+| `cookieMaxAge` | `15552000` | Its lifetime in seconds — six months |
+| `version` | `1` | Raise it to ask every visitor again |
+| `policyUrl` | `/privacy-policy` | Link shown in the banner; empty shows none |
+| `defaultLanguage` | `en` | Wording used when the site locale has no file |
+| `autoInject` | `true` | Appends the banner to every HTML page |
+| `colorScheme` | `auto` | `auto`, `light`, `dark` |
+| `backdropStyle` | `blur` | Behind the manage panel: `blur`, `dim`, `none` |
+| `displayMode` | `full` | `full`, `floating`, `corner-left`, `corner-right` |
+| `reopenButton` | `true` | Shows the tab that reopens the banner |
+| `reopenPosition` | `auto` | `auto` follows `displayMode`; or `left`, `right` |
+| `gpcHidesBanner` | `true` | A Global Privacy Control refusal answers for the visitor |
+| `analyticsCategory` | `statistics` | Category granting Matomo and Google Consent Mode analytics |
+| `marketingCategory` | `marketing` | Category granting their advertising signals |
+| `videoFacade` | `true` | YouTube videos load on click |
+| `videoThumbnails` | `true` | The site serves the thumbnail itself |
+| `videoConsentCategory` | `''` | Category that lifts the facade; empty asks each time |
+| `inventoryFramework` | `''` | Classes for the cookie table: `bootstrap`, `bulma`, `tailwind`, `custom` |
+| `inventoryClasses` | `[]` | Class overrides, keyed by element |
+| `categories` | `null` | The cookie inventory; null uses the shipped categories |
+| `registry` | `false` | Whether decisions are recorded |
+| `registryUser` | `true` | Records the signed-in user's id |
+| `registryRequestContext` | `false` | Records the IP address and user agent |
+| `registryGrace` | `12` | Months kept past the consent cookie's own life |
+
+`cookieName` and `policyUrl` read `COOKIE_CONSENT_NAME` and
+`COOKIE_CONSENT_POLICY_URL` from the environment when they are set.
 
 ### Wording
 
@@ -273,8 +305,82 @@ The shipped templates are Blade, which Statamic renders natively. Keep the
 
 ## Front end
 
-The JavaScript API, conditional tags and integration recipes are the same as for
-the Craft CMS plugin; see its documentation.
+### `window.qsmConsentKit`
+
+```js
+window.qsmConsentKit.get()                    // {v, ts, cat:{…}} | null
+window.qsmConsentKit.granted('statistics')    // bool
+window.qsmConsentKit.on('statistics', fn)     // runs now if already granted, otherwise on the next change
+window.qsmConsentKit.set({ statistics: true })
+window.qsmConsentKit.acceptAll()
+window.qsmConsentKit.refuseAll()
+window.qsmConsentKit.open()
+window.qsmConsentKit.close()
+window.qsmConsentKit.ready                    // true once the script has run
+
+document.addEventListener('qsm-consent-kit:change', e => e.detail);
+```
+
+`open()` reopens the banner, for a link of the site's own when `reopenButton`
+is off.
+
+`get()` returns `null` until a decision is made. Under Global Privacy Control it
+returns a refusal carrying `gpc: true`, with no category granted — a state the
+browser signals and the addon never writes to a cookie.
+
+The `<head>` bootstrap leaves `window.qsmConsentKitBootstrap = { state }`
+behind, which is what lets a video facade lift before the main script loads.
+
+### Conditional tags
+
+A tag marked with a category is activated once that category is granted:
+
+```html
+<script type="text/plain" data-consent="marketing" data-consent-src="https://…"></script>
+<script type="text/plain" data-consent="statistics">/* inline code */</script>
+<iframe data-consent="marketing" data-consent-src="https://…"></iframe>
+```
+
+- A script is recreated with a runnable type; an iframe gets its `src`.
+- Tags are activated one category at a time, in inventory order, and in
+  document order within a category.
+- Activated elements carry `data-consent-done`.
+
+A vendor's `<noscript>` fallback is fetched by the browser whatever the visitor
+answered. Leave it out.
+
+### Google Consent Mode and Matomo
+
+Both are primed in a refused state by the `<head>` bootstrap, before any tag
+runs, and updated when the visitor answers. `analyticsCategory` and
+`marketingCategory` decide which category grants what; an empty value grants
+nothing.
+
+To drive another vendor, wait on the category:
+
+```js
+window.qsmConsentKit.on('statistics', function () {
+    // load the vendor here
+});
+```
+
+### The consent cookie
+
+```json
+{ "v": 1, "ts": 1787598237, "cat": { "statistics": false, "marketing": false } }
+```
+
+| Property | Value |
+|---|---|
+| Encoding | URI-encoded JSON |
+| Scope | host-only, `path=/` |
+| Attributes | `SameSite=Lax`; `Secure` over HTTPS |
+| `v` | the `version` setting when the decision was made |
+| `ts` | Unix time of the decision |
+| `cat` | one boolean per optional category |
+
+A cookie whose `v` differs from `version`, or that cannot be read, is treated
+as absent: the banner is shown again.
 
 ## Licence
 
