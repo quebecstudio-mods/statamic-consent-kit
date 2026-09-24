@@ -17,6 +17,13 @@
             "homepage": "https://quebecstudio.com"
         }
     ],
+    "homepage": "https://quebecstudio.com",
+    "support": {
+        "email": "info@quebecstudio.com",
+        "issues": "https://github.com/quebecstudio-mods/statamic-consent-kit/issues",
+        "source": "https://github.com/quebecstudio-mods/statamic-consent-kit",
+        "docs": "https://github.com/quebecstudio-mods/statamic-consent-kit/blob/6.x/DOCUMENTATION.md"
+    },
     "require": {
         "php": ">=8.2",
         "quebecstudio-mods/consent-kit-core": "^1.3",

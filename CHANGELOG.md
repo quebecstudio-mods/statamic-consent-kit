@@ -1,5 +1,12 @@
 # Changelog
 
+## 6.0.2 - 2026-09-24
+
+### Added
+
+- The package declares where to get help: the homepage, an address, the issue
+  tracker, the source and the documentation.
+
 ## 6.0.1 - 2026-09-24
 
 ### Changed
