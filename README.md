@@ -134,7 +134,7 @@ control panel screens and the register's own.
 
 ## Documentation
 
-[DOCUMENTATION.md](DOCUMENTATION.md) covers the settings, the tags, the cookie
+[DOCUMENTATION.md](https://github.com/quebecstudio-mods/statamic-consent-kit/blob/6.x/DOCUMENTATION.md) covers the settings, the tags, the cookie
 inventory, the control panel and the consent register.
 
 ## Tests
@@ -146,4 +146,4 @@ vendor/bin/pest
 
 ## Licence
 
-Proprietary. See [LICENSE.md](LICENSE.md).
+Proprietary. See [LICENSE.md](https://github.com/quebecstudio-mods/statamic-consent-kit/blob/6.x/LICENSE.md).

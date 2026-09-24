@@ -1,5 +1,13 @@
 # Changelog
 
+## 6.0.7 - 2026-09-24
+
+### Fixed
+
+- The links to the documentation and the licence are absolute. The Marketplace
+  shows this file as the product description, outside the repository, where a
+  relative link resolves against the wrong host and leads nowhere.
+
 ## 6.0.6 - 2026-09-24
 
 ### Added
