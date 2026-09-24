@@ -1,0 +1,86 @@
+{
+    "name": "quebecstudio-mods/statamic-consent-kit",
+    "description": "Cookie consent banner for Statamic, built on consent-kit-core: no third-party cookie before consent, cache-safe HTML.",
+    "type": "statamic-addon",
+    "license": "proprietary",
+    "keywords": [
+        "statamic",
+        "statamic-addon",
+        "consent",
+        "cookies",
+        "loi25",
+        "gdpr"
+    ],
+    "authors": [
+        {
+            "name": "Québec Studio",
+            "homepage": "https://quebecstudio.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "quebecstudio-mods/consent-kit-core": "^1.2",
+        "quebecstudio-mods/consent-kit-register": "^1.0",
+        "quebecstudio-mods/laravel-consent-kit": "^1.1",
+        "statamic/cms": "^6.0"
+    },
+    "require-dev": {
+        "larastan/larastan": "^3.0",
+        "laravel/pint": "^1.32",
+        "orchestra/testbench": "^10.0 || ^11.0",
+        "pestphp/pest": "^3.0 || ^4.0 || ^5.0",
+        "pestphp/pest-plugin-laravel": "^3.0 || ^4.0 || ^5.0",
+        "pestphp/pest-plugin-type-coverage": "^3.0",
+        "phpstan/phpstan": "^2.2",
+        "rector/rector": "^2.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "QuebecStudioMods\\ConsentKit\\Statamic\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "QuebecStudioMods\\ConsentKit\\Statamic\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "pixelfear/composer-dist-plugin": true
+        }
+    },
+    "scripts": {
+        "test": "@php vendor/bin/pest",
+        "style": "@php vendor/bin/pint --test",
+        "stan": "@php -d memory_limit=512M vendor/bin/phpstan analyse --no-progress",
+        "types": "@php -d memory_limit=512M vendor/bin/pest --type-coverage --compact --min=100",
+        "check": [
+            "@style",
+            "@stan",
+            "@types",
+            "@test"
+        ],
+        "refactor": "@php -d memory_limit=512M vendor/bin/rector process --dry-run"
+    },
+    "extra": {
+        "statamic": {
+            "name": "Cookie Consent Kit",
+            "description": "Cookie consent banner built for Quebec's Law 25 and usable under the GDPR.",
+            "editions": [
+                "standard",
+                "pro"
+            ]
+        },
+        "laravel": {
+            "providers": [
+                "QuebecStudioMods\\ConsentKit\\Statamic\\ServiceProvider"
+            ]
+        },
+        "branch-alias": {
+            "dev-6.x": "6.x-dev"
+        }
+    }
+}

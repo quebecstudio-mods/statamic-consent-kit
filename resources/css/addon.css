@@ -1,0 +1,5 @@
+@import '@statamic/cms/tailwind.css';
+@source '../js';
+
+/* The panel CSS is compiled from Statamic sources, so the utilities used in
+   this addon exist nowhere unless Tailwind scans it too. */
