@@ -16,12 +16,20 @@ Requires PHP 8.2 and Statamic 6.
 
 ```bash
 composer require quebecstudio-mods/statamic-consent-kit
-php please vendor:publish --tag=cookie-consent-config
+php artisan migrate
 ```
 
-The addon is discovered automatically. `consent.css` and `consent.js` are
-published to `public/vendor/cookie-consent/` and republished on every
-`composer update`.
+The addon is discovered automatically, and everything is set from the control
+panel. `consent.css` and `consent.js` are published to
+`public/vendor/cookie-consent/` and republished on every `composer update`.
+
+`php artisan migrate` creates the consent register's tables. A site that keeps
+no register can skip it.
+
+**Publishing `config/cookie-consent.php` is optional**, and it is not a first
+step: the file pins every key it declares, and a pinned setting shows on the
+settings screen as read-only. Publish it when the site wants its configuration
+in version control, and then trim it to the keys it means to fix.
 
 ## What gets added to a page
 
@@ -97,9 +105,9 @@ sets no session cookie, and cached in `storage/app/cookie-consent-thumbnails/`.
 The edition is what the site declares in `config/statamic/editions.php`:
 
 ```php
-return [
+'addons' => [
     'quebecstudio-mods/statamic-consent-kit' => 'pro',
-];
+],
 ```
 
 The gate falls on collecting, never on reading: a register already kept stays
@@ -109,7 +117,7 @@ readable whatever the licence says.
 
 ### Settings
 
-**Addons ▸ Cookie Consent Kit ▸ Settings**, the native addon settings screen.
+**Settings ▸ Cookie Consent Kit**, the native addon settings screen.
 It writes `resources/addons/statamic-consent-kit.yaml`.
 
 Three sources, each overriding the one before: the package defaults, what the
@@ -119,7 +127,7 @@ its configuration in version control stays in charge.
 
 ### Consent register
 
-**Consent** in the navigation, on the Pro edition. One row per answer: when,
+**Tools ▸ Consent** in the navigation, on the Pro edition. One row per answer: when,
 which site, which user, what was pressed, where from, and the outcome.
 
 Filter by period, outcome and site; sort on any of them; choose which columns
@@ -129,9 +137,10 @@ that something was.
 
 Export the filtered listing as CSV or JSON.
 
-### Consent purge
+### Consent Purge
 
-**Utilities ▸ Consent purge**, for deleting records older than a chosen age,
+**Tools ▸ Utilities ▸ Consent Purge**, for deleting records older than a chosen
+age,
 beside the retention that removes outlived ones on its own.
 
 ### Permissions
@@ -175,8 +184,13 @@ asks for:
 * * * * * cd /path/to/site && php artisan schedule:run >> /dev/null 2>&1
 ```
 
-Without it, nothing expires on its own — purge from **Utilities ▸ Consent
-purge**, or run the command by hand.
+Without it, nothing expires on its own — purge from **Tools ▸ Utilities ▸ Consent
+Purge**, or run the command by hand.
+
+**Retention answers to the records, not to the switch.** Turning the register
+off stops new decisions being written; it does not strand the ones already
+kept, which can carry an address and a user agent. They go on expiring, and the
+purge utility goes on reaching them.
 
 ### Which database
 

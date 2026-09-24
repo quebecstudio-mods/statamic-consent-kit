@@ -1,5 +1,21 @@
 # Changelog
 
+## 6.0.5 - 2026-09-24
+
+### Fixed
+
+- **Retention answers to the records, not to the switch.** Turning the register
+  off stopped expiry, so decisions already kept — which can carry an address
+  and a user agent — stayed indefinitely. They go on expiring now. Turning the
+  register off still stops new decisions being written.
+- The documentation said to publish `config/cookie-consent.php` while
+  installing. That file pins every key it declares, so following it left almost
+  every setting read-only. It is optional, and says so.
+- The editions example left out the `addons` key, so Pro never turned on when
+  it was copied as written.
+- The settings screen, the register and the purge utility are named and placed
+  as the panel shows them.
+
 ## 6.0.4 - 2026-09-24
 
 ### Changed

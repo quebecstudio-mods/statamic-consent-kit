@@ -70,7 +70,7 @@ the browser makes it: the server clock, the site, the categories answered, and
 a fingerprint of the wording that was on screen. The cookie's own timestamp
 lives on the visitor's device and proves nothing.
 
-Records are read under **Tools › Consentements**, filtered by date and answer,
+Records are read under **Tools › Consent**, filtered by date and answer,
 and exported as CSV or JSON. An export carries the wording of every screen, so
 a reader can recompute each fingerprint and check that nothing moved.
 

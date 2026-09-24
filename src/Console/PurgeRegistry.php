@@ -4,6 +4,7 @@ namespace QuebecStudioMods\ConsentKit\Statamic\Console;
 
 use Illuminate\Console\Command;
 use QuebecStudioMods\ConsentKit\Statamic\Registry\Decisions;
+use Throwable;
 
 /**
  * Applies the register's retention: deletes the records that have outlived the
@@ -22,8 +23,17 @@ class PurgeRegistry extends Command
 
     public function handle(Decisions $decisions): int
     {
-        if (!$decisions->isEnabled()) {
-            $this->components->info('The consent register is off; nothing to purge.');
+
+        try {
+            $records = $decisions->hasRecords();
+        } catch (Throwable $unreadable) {
+            report($unreadable);
+
+            $records = false;
+        }
+
+        if (!$records) {
+            $this->components->info('The consent register holds nothing to purge.');
 
             return self::SUCCESS;
         }
