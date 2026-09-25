@@ -1,5 +1,19 @@
 # Changelog
 
+## 6.0.8 - 2026-09-25
+
+### Fixed
+
+- **The settings screen says when the register is dormant.** A site whose
+  configuration asks for a register without the Pro edition was told what Pro
+  adds, but not that nothing is being written. The register’s own screen said
+  it; the screen holding the switch did not.
+
+### Changed
+
+- The settings screen names the free edition by what it does rather than by
+  its handle.
+
 ## 6.0.7 - 2026-09-24
 
 ### Fixed
@@ -28,7 +42,7 @@
 
 ### Fixed
 
-- **Retention answers to the recordsje, not to the switch.** Turning the register
+- **Retention answers to the records, not to the switch.** Turning the register
   off stopped expiry, so decisions already kept — which can carry an address
   and a user agent — stayed indefinitely. They go on expiring now. Turning the
   register off still stops new decisions being written.

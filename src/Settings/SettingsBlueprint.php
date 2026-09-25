@@ -300,10 +300,22 @@ class SettingsBlueprint
     {
         $section = self::section('registry', self::$pro
             ? null
-            : (string)__('Keeping a server-side register is part of the Pro edition. Standard collects and honours consent; Pro archives the proof.'));
+            : (string)__('Keeping a server-side register is part of the Pro edition. The free edition collects and honours consent; Pro archives the proof.'));
 
         if (self::$pro) {
             return $section;
+        }
+
+        if (!empty(self::$values['registry'])) {
+            array_unshift($section['fields'], [
+                'handle' => 'registry-dormant',
+                'field' => [
+                    'display' => __('Consent register'),
+                    'type' => 'info',
+                    'state' => 'warning',
+                    'content' => __('This install asks for a register in its configuration. Without the Pro edition it stays dormant, and nothing is written. Records already kept remain readable, exportable and purgeable.'),
+                ],
+            ]);
         }
 
         foreach ($section['fields'] as $index => $field) {
