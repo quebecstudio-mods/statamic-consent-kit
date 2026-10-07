@@ -1,5 +1,14 @@
 # Changelog
 
+## 6.1.0 - 2026-10-06
+
+### Added
+
+- **Keep the end of the page visible** (`reserveSpace`), under Appearance. The
+  full-width banner becomes sticky, so it takes its own height at the end of the
+  page instead of covering the footer, and that space opens and closes with it.
+  Off by default.
+
 ## 6.0.8 - 2026-09-25
 
 ### Fixed

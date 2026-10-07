@@ -222,6 +222,7 @@ php please vendor:publish --tag=cookie-consent-config
 | `colorScheme` | `auto` | `auto`, `light`, `dark` |
 | `backdropStyle` | `blur` | Behind the manage panel: `blur`, `dim`, `none` |
 | `displayMode` | `full` | `full`, `floating`, `corner-left`, `corner-right` |
+| `reserveSpace` | `false` | Full width (and every mode under 40rem): the banner is sticky, takes its own height at the end of the page, and that space opens and closes with it |
 | `reopenButton` | `true` | Shows the tab that reopens the banner |
 | `reopenPosition` | `auto` | `auto` follows `displayMode`; or `left`, `right` |
 | `gpcHidesBanner` | `true` | A Global Privacy Control refusal answers for the visitor |
