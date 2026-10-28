@@ -1,5 +1,17 @@
 # Changelog
 
+## 6.1.1 - 2026-10-28
+
+### Fixed
+
+- **The banner keeps its stylesheet and script behind an ad blocker.** Blockers
+  drop any URL with a `/cookie-consent/` segment, where the assets and the video
+  poster were served from, so the banner showed unstyled and its buttons did
+  nothing. Requires `quebecstudio-mods/laravel-consent-kit` 1.2.1, which serves
+  them from `public/vendor/consent-kit/` and `/consent-kit/thumbnail`. A copy
+  published to the old directory is still used until the assets are published
+  again; the old directory can then be deleted.
+
 ## 6.1.0 - 2026-10-06
 
 ### Added
